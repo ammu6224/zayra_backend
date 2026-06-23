@@ -3,11 +3,15 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "change-this-to-a-long-random-secret-key"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "zayra-backend.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
 
 # ==========================
 # INSTALLED APPS

@@ -1,7 +1,10 @@
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import PriceOfferViewSet
 
 router = DefaultRouter()
-router.register("offers", PriceOfferViewSet)
+router.register(r"offers", PriceOfferViewSet, basename="offers")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("", include(router.urls)),
+]
