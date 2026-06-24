@@ -10,9 +10,8 @@ class SignupSerializer(serializers.ModelSerializer):
         fields = (
             "username",
             "email",
-            "phone",
             "password",
-            "is_vendor"
+            "is_vendor",
         )
 
     def create(self, validated_data):
@@ -22,8 +21,11 @@ class SignupSerializer(serializers.ModelSerializer):
             password=validated_data["password"]
         )
 
-        user.phone = validated_data.get("phone")
-        user.is_vendor = validated_data.get("is_vendor", False)
+        user.is_vendor = validated_data.get(
+            "is_vendor",
+            False
+        )
+
         user.save()
 
         return user
@@ -36,7 +38,6 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "email",
-            "phone",
             "is_vendor",
-            "is_customer"
+            "is_customer",
         )
