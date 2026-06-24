@@ -16,44 +16,61 @@ from .models import User, EmailOTP
 # SEND OTP
 # =========================
 class SendOTPView(APIView):
-    permission_classes = [AllowAny]
+permission_classes = [AllowAny]
 
-    def post(self, request):
-        try:
-            email = request.data.get("email")
+def post(self, request):
+    try:
+        from django.core.mail import send_mail
 
-            if not email:
-                return Response(
-                    {"error": "Email required"},
-                    status=400
-                )
+        email = request.data.get("email")
 
-            otp = str(random.randint(100000, 999999))
-
-            EmailOTP.objects.update_or_create(
-                email=email,
-                defaults={"otp": otp}
-            )
-
-            # Print OTP in Render logs
-            print("\n")
-            print("===================================")
-            print("ZAYRA OTP FOR:", email)
-            print("OTP:", otp)
-            print("===================================")
-            print("\n")
-
-            return Response({
-                "message": "OTP sent successfully"
-            }, status=200)
-
-        except Exception as e:
-            print("OTP ERROR:", str(e))
-
+        if not email:
             return Response(
-                {"error": str(e)},
-                status=500
+                {"error": "Email required"},
+                status=400
             )
+
+        otp = str(random.randint(100000, 999999))
+
+        EmailOTP.objects.update_or_create(
+            email=email,
+            defaults={"otp": otp}
+        )
+
+        # Send OTP to email
+        send_mail(
+            subject="Zayra Email Verification OTP",
+            message=f"""
+
+Hello,
+
+Your OTP for Zayra account verification is:
+
+{otp}
+
+This OTP is valid for 10 minutes.
+
+Do not share this OTP with anyone.
+
+Thank you,
+Team Zayra
+""",
+from_email=settings.DEFAULT_FROM_EMAIL,
+recipient_list=[email],
+fail_silently=False,
+)
+
+        return Response({
+            "message": "OTP sent successfully"
+        }, status=200)
+
+    except Exception as e:
+        print("EMAIL ERROR:", str(e))
+
+        return Response(
+            {"error": str(e)},
+            status=500
+        )
 # =========================
 # VERIFY OTP
 # =========================
