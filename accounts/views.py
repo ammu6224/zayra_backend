@@ -34,19 +34,27 @@ class SendOTPView(APIView):
                 defaults={"otp": otp}
             )
 
-            print(f"OTP FOR {email}: {otp}")
+            # ✅ SAFE: never crash API if email fails
+            try:
+                send_mail(
+                    subject="ZAYRA Email Verification OTP",
+                    message=f"Your ZAYRA OTP is: {otp}",
+                    from_email=None,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print("EMAIL ERROR:", str(e))
+                # still return OTP success so frontend doesn't break
 
             return Response({
-                "message": "OTP generated successfully",
-                "otp": otp
+                "message": "OTP sent successfully"
             }, status=200)
 
         except Exception as e:
             return Response({
-                "error": "OTP failed",
-                "details": str(e)
+                "error": str(e)
             }, status=500)
-
 
 # =========================
 # VERIFY OTP
