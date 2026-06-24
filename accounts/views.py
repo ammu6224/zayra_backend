@@ -4,10 +4,74 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from django.core.mail import send_mail
 from django.db.models import Q
+import random
 
 from .serializers import SignupSerializer, UserSerializer
-from .models import User
+from .models import User, EmailOTP
+
+
+# =========================
+# SEND OTP
+# =========================
+class SendOTPView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email")
+
+        if not email:
+            return Response(
+                {"error": "Email required"},
+                status=400
+            )
+
+        otp = str(random.randint(100000, 999999))
+
+        EmailOTP.objects.update_or_create(
+            email=email,
+            defaults={"otp": otp}
+        )
+
+        send_mail(
+            subject="ZAYRA Email Verification OTP",
+            message=f"Your ZAYRA OTP is: {otp}",
+            from_email=None,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        return Response({
+            "message": "OTP sent successfully"
+        })
+
+
+# =========================
+# VERIFY OTP
+# =========================
+class VerifyOTPView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        email = request.data.get("email")
+        otp = request.data.get("otp")
+
+        obj = EmailOTP.objects.filter(
+            email=email,
+            otp=otp
+        ).first()
+
+        if obj:
+            return Response({
+                "verified": True
+            })
+
+        return Response(
+            {"verified": False},
+            status=400
+        )
 
 
 # =========================
@@ -17,9 +81,11 @@ class SignupView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+
         serializer = SignupSerializer(data=request.data)
 
         if serializer.is_valid():
+
             user = serializer.save()
 
             refresh = RefreshToken.for_user(user)
@@ -34,11 +100,14 @@ class SignupView(APIView):
                 "user": UserSerializer(user).data
             }, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 # =========================
-# LOGIN (EMAIL / PHONE / USERNAME)
+# LOGIN
 # =========================
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -51,10 +120,9 @@ class LoginView(APIView):
         if not login_id or not password:
             return Response(
                 {"error": "Login and password required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
 
-        # 🔥 Find user using username OR email OR phone
         user_obj = User.objects.filter(
             Q(username=login_id) |
             Q(email=login_id) |
@@ -64,10 +132,9 @@ class LoginView(APIView):
         if not user_obj:
             return Response(
                 {"error": "User not found"},
-                status=status.HTTP_401_UNAUTHORIZED
+                status=401
             )
 
-        # authenticate using username internally
         user = authenticate(
             username=user_obj.username,
             password=password
@@ -76,7 +143,7 @@ class LoginView(APIView):
         if user is None:
             return Response(
                 {"error": "Invalid password"},
-                status=status.HTTP_401_UNAUTHORIZED
+                status=401
             )
 
         refresh = RefreshToken.for_user(user)
@@ -88,7 +155,7 @@ class LoginView(APIView):
             "access": str(refresh.access_token),
             "role": role,
             "user": UserSerializer(user).data
-        }, status=status.HTTP_200_OK)
+        })
 
 
 # =========================
@@ -102,6 +169,7 @@ class ProfileView(APIView):
         return Response(serializer.data)
 
     def put(self, request):
+
         serializer = UserSerializer(
             request.user,
             data=request.data,
@@ -114,5 +182,5 @@ class ProfileView(APIView):
 
         return Response(
             serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
+            status=400
         )

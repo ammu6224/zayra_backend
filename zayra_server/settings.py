@@ -5,135 +5,130 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get(
-"SECRET_KEY",
-"django-insecure-zayra-super-secret-key-12345"
+    "SECRET_KEY",
+    "django-insecure-zayra-super-secret-key-12345"
 )
 
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-#==========================
 
-#INSTALLED APPS
-
-#==========================
+# ==========================
+# INSTALLED APPS
+# ==========================
 
 INSTALLED_APPS = [
-"django.contrib.admin",
-"django.contrib.auth",
-"django.contrib.contenttypes",
-"django.contrib.sessions",
-"django.contrib.messages",
-"django.contrib.staticfiles",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 
-"django_extensions",
+    "django_extensions",
 
-# Third Party
-"rest_framework",
-"rest_framework.authtoken",
-"corsheaders",
+    # Third Party
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
 
-# Local Apps
-"accounts",
-"products",
-"orders",
-"cart",
-"chat",
-"negotiations",
-"core",
-
+    # Local Apps
+    "accounts",
+    "products",
+    "orders",
+    "cart",
+    "chat",
+    "negotiations",
+    "core",
 ]
 
-#==========================
 
-#MIDDLEWARE
-
-#==========================
+# ==========================
+# MIDDLEWARE
+# ==========================
 
 MIDDLEWARE = [
-"corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 
-"django.middleware.security.SecurityMiddleware",
-"django.contrib.sessions.middleware.SessionMiddleware",
-"django.middleware.common.CommonMiddleware",
-"django.middleware.csrf.CsrfViewMiddleware",
-"django.contrib.auth.middleware.AuthenticationMiddleware",
-"django.contrib.messages.middleware.MessageMiddleware",
-"django.middleware.clickjacking.XFrameOptionsMiddleware",
-
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 ROOT_URLCONF = "zayra_server.urls"
-#==========================
 
-#TEMPLATES
 
-#==========================
+# ==========================
+# TEMPLATES
+# ==========================
 
 TEMPLATES = [
-{
-"BACKEND": "django.template.backends.django.DjangoTemplates",
-"DIRS": [],
-"APP_DIRS": True,
-"OPTIONS": {
-"context_processors": [
-"django.template.context_processors.request",
-"django.contrib.auth.context_processors.auth",
-"django.contrib.messages.context_processors.messages",
-],
-},
-},
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
 ]
+
 
 WSGI_APPLICATION = "zayra_server.wsgi.application"
 
-#==========================
 
-#DATABASE
-
-#==========================
+# ==========================
+# DATABASE
+# ==========================
 
 DATABASES = {
-"default": {
-"ENGINE": "django.db.backends.sqlite3",
-"NAME": BASE_DIR / "db.sqlite3",
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
-}
 
-#==========================
 
-#CUSTOM USER MODEL
-
-#==========================
+# ==========================
+# CUSTOM USER MODEL
+# ==========================
 
 AUTH_USER_MODEL = "accounts.User"
 
-#==========================
-#PASSWORD VALIDATION
 
-#==========================
+# ==========================
+# PASSWORD VALIDATION
+# ==========================
 
 AUTH_PASSWORD_VALIDATORS = [
-{
-"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-},
-{
-"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-},
-{
-"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-},
-{
-"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
-#==========================
 
-#INTERNATIONALIZATION
-
-#==========================
+# ==========================
+# INTERNATIONALIZATION
+# ==========================
 
 LANGUAGE_CODE = "en-us"
 
@@ -142,77 +137,89 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
-#==========================
 
-#STATIC FILES
-
-#==========================
+# ==========================
+# STATIC FILES
+# ==========================
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-#==========================
 
-#MEDIA FILES
-
-#==========================
+# ==========================
+# MEDIA FILES
+# ==========================
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-#==========================
 
-#DEFAULT FIELD
-
-#==========================
+# ==========================
+# DEFAULT FIELD
+# ==========================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-#==========================
 
-#CORS
-
-#==========================
+# ==========================
+# CORS
+# ==========================
 
 CORS_ALLOWED_ORIGINS = [
-"https://myzayra.in",
-"https://www.myzayra.in",
+    "https://myzayra.in",
+    "https://www.myzayra.in",
 ]
 
-#==========================
 
-#DJANGO REST FRAMEWORK
-
-#==========================
+# ==========================
+# DJANGO REST FRAMEWORK
+# ==========================
 
 REST_FRAMEWORK = {
-"DEFAULT_AUTHENTICATION_CLASSES": (
-"rest_framework_simplejwt.authentication.JWTAuthentication",
-),
-"DEFAULT_PERMISSION_CLASSES": (
-"rest_framework.permissions.AllowAny",
-),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.AllowAny",
+    ),
 }
 
-#==========================
 
-#SIMPLE JWT
-
-#==========================
+# ==========================
+# SIMPLE JWT
+# ==========================
 
 SIMPLE_JWT = {
-"ACCESS_TOKEN_LIFETIME": timedelta(days=7),
-"REFRESH_TOKEN_LIFETIME": timedelta(days=30),
-"ROTATE_REFRESH_TOKENS": False,
-"BLACKLIST_AFTER_ROTATION": False,
-"UPDATE_LAST_LOGIN": True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
 }
 
-#==========================
 
-#FILE UPLOAD LIMIT
-
-#==========================
+# ==========================
+# FILE UPLOAD LIMIT
+# ==========================
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+
+# ==========================
+# EMAIL CONFIGURATION (OTP)
+# ==========================
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Replace with your Gmail
+EMAIL_HOST_USER = "zayraofficial024@gmail.com"
+
+# Replace with Gmail App Password
+EMAIL_HOST_PASSWORD = "pyqr aotk gcsx wxxp"
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

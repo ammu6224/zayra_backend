@@ -7,6 +7,7 @@ class User(AbstractUser):
     is_customer = models.BooleanField(default=True)
 
     phone = models.CharField(max_length=15, blank=True, null=True)
+
     profile_image = models.ImageField(
         upload_to="profiles/",
         blank=True,
@@ -31,3 +32,15 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+# ==========================
+# EMAIL OTP MODEL
+# ==========================
+class EmailOTP(models.Model):
+    email = models.EmailField(unique=True)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.email} - {self.otp}"
