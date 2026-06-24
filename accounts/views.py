@@ -4,10 +4,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db.models import Q
-from django.core.mail import send_mail
 from django.conf import settings
 import random
 import traceback
+
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 from .serializers import SignupSerializer, UserSerializer
 from .models import User, EmailOTP
@@ -36,41 +38,61 @@ class SendOTPView(APIView):
                 defaults={"otp": otp}
             )
 
-            # Debug Logs
             print("===================================")
-            print("EMAIL HOST:", settings.EMAIL_HOST)
-            print("EMAIL PORT:", settings.EMAIL_PORT)
-            print("EMAIL USER:", settings.EMAIL_HOST_USER)
-            print(
-                "PASSWORD FOUND:",
-                settings.EMAIL_HOST_PASSWORD is not None
-            )
             print("SENDING OTP TO:", email)
             print("OTP:", otp)
+            print("BREVO API FOUND:",
+                  settings.BREVO_API_KEY is not None)
             print("===================================")
 
-            send_mail(
-                subject="Zayra Email Verification OTP",
+            # Configure Brevo API
+            configuration = sib_api_v3_sdk.Configuration()
+            configuration.api_key['api-key'] = settings.BREVO_API_KEY
 
-                message=f"""
-Hello,
-
-Your OTP for Zayra account verification is:
-
-{otp}
-
-This OTP is valid for 10 minutes.
-
-Do not share this OTP with anyone.
-
-Thank you,
-Team Zayra
-""",
-
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
+            api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+                sib_api_v3_sdk.ApiClient(configuration)
             )
+
+            send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+                to=[{"email": email}],
+                sender={
+                    "email": "zayraofficial024@gmail.com",
+                    "name": "Zayra"
+                },
+                subject="Zayra Email Verification OTP",
+                html_content=f"""
+                <html>
+                    <body>
+                        <h2>Zayra Email Verification</h2>
+
+                        <p>Your OTP is:</p>
+
+                        <h1 style="color:blue;">
+                            {otp}
+                        </h1>
+
+                        <p>
+                            This OTP is valid for
+                            <b>10 minutes</b>.
+                        </p>
+
+                        <p>
+                            Do not share this OTP
+                            with anyone.
+                        </p>
+
+                        <br>
+
+                        <p>
+                            Thanks,<br>
+                            Team Zayra
+                        </p>
+                    </body>
+                </html>
+                """
+            )
+
+            api_instance.send_transac_email(send_smtp_email)
 
             print("EMAIL SENT SUCCESSFULLY")
 
@@ -79,8 +101,20 @@ Team Zayra
                 status=200
             )
 
+        except ApiException as e:
+            print("BREVO API ERROR:", str(e))
+            traceback.print_exc()
+
+            return Response(
+                {
+                    "error": str(e),
+                    "message": "Failed to send OTP"
+                },
+                status=500
+            )
+
         except Exception as e:
-            print("EMAIL ERROR:", str(e))
+            print("GENERAL ERROR:", str(e))
             traceback.print_exc()
 
             return Response(
