@@ -220,9 +220,7 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 EMAIL_HOST_USER = os.environ.get(
-"EMAIL_HOST_USER",
-"afdc6b001@smtp-brevo.com"
-)
+"EMAIL_HOST_USER",)
 
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
@@ -231,7 +229,7 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_TIMEOUT = 30
 
 DEFAULT_FROM_EMAIL = "Zayra <zayraofficial024@gmail.com>"
-SERVER_EMAIL = "zayraofficial024@gmail.com"
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 #Debug prints (remove later)
 
