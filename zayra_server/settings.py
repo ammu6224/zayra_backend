@@ -230,7 +230,7 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 EMAIL_TIMEOUT = 30
 
-DEFAULT_FROM_EMAIL = "Zayra "zayraofficial024@gmail.com" (mailto:zayraofficial024@gmail.com)"
+DEFAULT_FROM_EMAIL = "Zayra <zayraofficial024@gmail.com>"
 SERVER_EMAIL = "zayraofficial024@gmail.com"
 
 Debug prints (remove later)
