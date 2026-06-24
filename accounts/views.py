@@ -1,12 +1,12 @@
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db.models import Q
-import random
+from django.core.mail import send_mail
 from django.conf import settings
+import random
 
 from .serializers import SignupSerializer, UserSerializer
 from .models import User, EmailOTP
@@ -16,32 +16,28 @@ from .models import User, EmailOTP
 # SEND OTP
 # =========================
 class SendOTPView(APIView):
-permission_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
-def post(self, request):
-    try:
-        from django.core.mail import send_mail
+    def post(self, request):
+        try:
+            email = request.data.get("email")
 
-        email = request.data.get("email")
+            if not email:
+                return Response(
+                    {"error": "Email required"},
+                    status=400
+                )
 
-        if not email:
-            return Response(
-                {"error": "Email required"},
-                status=400
+            otp = str(random.randint(100000, 999999))
+
+            EmailOTP.objects.update_or_create(
+                email=email,
+                defaults={"otp": otp}
             )
 
-        otp = str(random.randint(100000, 999999))
-
-        EmailOTP.objects.update_or_create(
-            email=email,
-            defaults={"otp": otp}
-        )
-
-        # Send OTP to email
-        send_mail(
-            subject="Zayra Email Verification OTP",
-            message=f"""
-
+            send_mail(
+                subject="Zayra Email Verification OTP",
+                message=f"""
 Hello,
 
 Your OTP for Zayra account verification is:
@@ -55,22 +51,25 @@ Do not share this OTP with anyone.
 Thank you,
 Team Zayra
 """,
-from_email=settings.DEFAULT_FROM_EMAIL,
-recipient_list=[email],
-fail_silently=False,
-)
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
 
-        return Response({
-            "message": "OTP sent successfully"
-        }, status=200)
+            return Response(
+                {"message": "OTP sent successfully"},
+                status=200
+            )
 
-    except Exception as e:
-        print("EMAIL ERROR:", str(e))
+        except Exception as e:
+            print("EMAIL ERROR:", str(e))
 
-        return Response(
-            {"error": str(e)},
-            status=500
-        )
+            return Response(
+                {"error": str(e)},
+                status=500
+            )
+
+
 # =========================
 # VERIFY OTP
 # =========================
