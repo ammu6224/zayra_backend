@@ -22,10 +22,7 @@ class SendOTPView(APIView):
             email = request.data.get("email")
 
             if not email:
-                return Response(
-                    {"error": "Email required"},
-                    status=400
-                )
+                return Response({"error": "Email required"}, status=400)
 
             otp = str(random.randint(100000, 999999))
 
@@ -34,28 +31,18 @@ class SendOTPView(APIView):
                 defaults={"otp": otp}
             )
 
-            # ✅ SAFE: never crash API if email fails
-            try:
-                send_mail(
-                    subject="ZAYRA Email Verification OTP",
-                    message=f"Your ZAYRA OTP is: {otp}",
-                    from_email=None,
-                    recipient_list=[email],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                print("EMAIL ERROR:", str(e))
-                # still return OTP success so frontend doesn't break
+            send_mail(
+                subject="ZAYRA OTP Verification",
+                message=f"Your OTP is: {otp}",
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False,
+            )
 
-            return Response({
-                "message": "OTP sent successfully"
-            }, status=200)
+            return Response({"message": "OTP sent successfully"}, status=200)
 
         except Exception as e:
-            return Response({
-                "error": str(e)
-            }, status=500)
-
+            return Response({"error": str(e)}, status=500)
 # =========================
 # VERIFY OTP
 # =========================
