@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db.models import Q
 import random
-import django.conf import settings
+from django.conf import settings
 
 from .serializers import SignupSerializer, UserSerializer
 from .models import User, EmailOTP
