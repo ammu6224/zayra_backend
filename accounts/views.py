@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db.models import Q
 import random
+import django.conf import settings
 
 from .serializers import SignupSerializer, UserSerializer
 from .models import User, EmailOTP
@@ -37,7 +38,7 @@ class SendOTPView(APIView):
             email_msg = EmailMessage(
                 subject="ZAYRA OTP Verification",
                 body=f"Your OTP is: {otp}",
-                from_email=EMAIL_HOST_USER,
+                from_email=settings.EMAIL_HOST_USER,
                 to=[email],
             )
 
