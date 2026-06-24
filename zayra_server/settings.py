@@ -220,6 +220,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "zayraofficial024@gmail.com"
 
 # Replace with Gmail App Password
-EMAIL_HOST_PASSWORD = "pyqr aotk gcsx wxxp"
+EMAIL_HOST_PASSWORD = "pyqraotkgcsxwxxp"
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
