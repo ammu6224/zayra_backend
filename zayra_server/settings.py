@@ -217,7 +217,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "zayraofficial024@gmail.com"
-EMAIL_HOST_PASSWORD = "pyqraotkgcsxwxxp"  # app password (no spaces)
+
+EMAIL_HOST_PASSWORD = "pyqraotkgcsxwxxp"  # must be exact app password
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
+
+# IMPORTANT FIX FOR RENDER / CLOUD SERVERS
+EMAIL_USE_LOCALTIME = True

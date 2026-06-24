@@ -31,17 +31,22 @@ class SendOTPView(APIView):
                 defaults={"otp": otp}
             )
 
-            send_mail(
+            # send email safely
+            from django.core.mail import EmailMessage
+
+            email_msg = EmailMessage(
                 subject="ZAYRA OTP Verification",
-                message=f"Your OTP is: {otp}",
+                body=f"Your OTP is: {otp}",
                 from_email=EMAIL_HOST_USER,
-                recipient_list=[email],
-                fail_silently=False,
+                to=[email],
             )
+
+            email_msg.send(fail_silently=False)
 
             return Response({"message": "OTP sent successfully"}, status=200)
 
         except Exception as e:
+            print("OTP ERROR:", str(e))
             return Response({"error": str(e)}, status=500)
 # =========================
 # VERIFY OTP
