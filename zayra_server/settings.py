@@ -226,7 +226,7 @@ EMAIL_HOST_USER = os.environ.get(
 
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
-Timeout after 30 seconds
+#Timeout after 30 seconds
 
 EMAIL_TIMEOUT = 30
 
