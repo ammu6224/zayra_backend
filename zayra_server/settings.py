@@ -206,7 +206,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 # ==========================
-# EMAIL CONFIGURATION (BREVO)
+# EMAIL CONFIGURATION
 # ==========================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -215,8 +215,14 @@ EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "afdc6b001@smtp-brevo.com"
-EMAIL_HOST_PASSWORD = "mYR3q806UhwkXfgQ"
+EMAIL_HOST_USER = os.environ.get(
+    "EMAIL_HOST_USER",
+    "afdc6b001@smtp-brevo.com"
+)
 
-DEFAULT_FROM_EMAIL = "Zayra <zayraofficial024@gmail.com>"
+EMAIL_HOST_PASSWORD = os.environ.get(
+    "EMAIL_HOST_PASSWORD"
+)
+
+DEFAULT_FROM_EMAIL = "zayraofficial024@gmail.com"
 SERVER_EMAIL = "zayraofficial024@gmail.com"
