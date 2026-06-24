@@ -205,17 +205,18 @@ SIMPLE_JWT = {
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
-
 # ==========================
-# EMAIL CONFIGURATION (FIXED)
+# EMAIL CONFIGURATION
 # ==========================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
+EMAIL_HOST_USER = "zayraofficial024@gmail.com"
+EMAIL_HOST_PASSWORD = "pyqraotkgcsxwxxp"
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
-
-# IMPORTANT FIX FOR RENDER / CLOUD SERVERS
-EMAIL_USE_LOCALTIME = True
+DEFAULT_FROM_EMAIL = "zayraofficial024@gmail.com"
+SERVER_EMAIL = "zayraofficial024@gmail.com"
