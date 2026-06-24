@@ -205,24 +205,37 @@ SIMPLE_JWT = {
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
-# ==========================
-# EMAIL CONFIGURATION
-# ==========================
+#==========================
+
+#EMAIL CONFIGURATION (BREVO)
+
+#==========================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
+
 EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 EMAIL_HOST_USER = os.environ.get(
-    "EMAIL_HOST_USER",
-    "afdc6b001@smtp-brevo.com"
+"EMAIL_HOST_USER",
+"afdc6b001@smtp-brevo.com"
 )
 
-EMAIL_HOST_PASSWORD = os.environ.get(
-    "EMAIL_HOST_PASSWORD"
-)
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
-DEFAULT_FROM_EMAIL = "zayraofficial024@gmail.com"
+Timeout after 30 seconds
+
+EMAIL_TIMEOUT = 30
+
+DEFAULT_FROM_EMAIL = "Zayra "zayraofficial024@gmail.com" (mailto:zayraofficial024@gmail.com)"
 SERVER_EMAIL = "zayraofficial024@gmail.com"
+
+Debug prints (remove later)
+
+print("EMAIL HOST:", EMAIL_HOST)
+print("EMAIL PORT:", EMAIL_PORT)
+print("EMAIL USER:", EMAIL_HOST_USER)
+print("PASSWORD FOUND:", EMAIL_HOST_PASSWORD is not None)
