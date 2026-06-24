@@ -14,32 +14,32 @@ from .models import User, EmailOTP
 
 # =========================
 # SEND OTP (FIXED)class SendOTPView(APIView):
-                      permission_classes = [AllowAny]
+ class SendOTPView(APIView):
+     permission_classes = [AllowAny]
 
-                      def post(self, request):
-                          email = request.data.get("email")
+     def post(self, request):
+         email = request.data.get("email")
 
-                          if not email:
-                              return Response(
-                                  {"error": "Email required"},
-                                  status=400
-                              )
+         if not email:
+             return Response(
+                 {"error": "Email required"},
+                 status=400
+             )
 
-                          otp = str(random.randint(100000, 999999))
+         otp = str(random.randint(100000, 999999))
 
-                          EmailOTP.objects.update_or_create(
-                              email=email,
-                              defaults={"otp": otp}
-                          )
+         EmailOTP.objects.update_or_create(
+             email=email,
+             defaults={"otp": otp}
+         )
 
-                          # IMPORTANT FIX: NO SMTP CRASH
-                          try:
-                              print(f"OTP FOR {email}: {otp}")  # shows in Render logs
+         # IMPORTANT: NEVER BLOCK REQUEST
+         print(f"OTP FOR {email}: {otp}")
 
-                              return Response({
-                                  "message": "OTP generated successfully",
-                                  "debug_otp": otp   # remove later in production
-                              }, status=200)
+         return Response({
+             "message": "OTP generated successfully",
+             "otp": otp  # temporary for testing
+         }, status=200)
 
                           except Exception as e:
                               return Response({
