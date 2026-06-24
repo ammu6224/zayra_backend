@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
 import random
+import traceback
 
 from .serializers import SignupSerializer, UserSerializer
 from .models import User, EmailOTP
@@ -35,8 +36,22 @@ class SendOTPView(APIView):
                 defaults={"otp": otp}
             )
 
+            # Debug Logs
+            print("===================================")
+            print("EMAIL HOST:", settings.EMAIL_HOST)
+            print("EMAIL PORT:", settings.EMAIL_PORT)
+            print("EMAIL USER:", settings.EMAIL_HOST_USER)
+            print(
+                "PASSWORD FOUND:",
+                settings.EMAIL_HOST_PASSWORD is not None
+            )
+            print("SENDING OTP TO:", email)
+            print("OTP:", otp)
+            print("===================================")
+
             send_mail(
                 subject="Zayra Email Verification OTP",
+
                 message=f"""
 Hello,
 
@@ -51,10 +66,13 @@ Do not share this OTP with anyone.
 Thank you,
 Team Zayra
 """,
+
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
             )
+
+            print("EMAIL SENT SUCCESSFULLY")
 
             return Response(
                 {"message": "OTP sent successfully"},
@@ -63,9 +81,13 @@ Team Zayra
 
         except Exception as e:
             print("EMAIL ERROR:", str(e))
+            traceback.print_exc()
 
             return Response(
-                {"error": str(e)},
+                {
+                    "error": str(e),
+                    "message": "Failed to send OTP"
+                },
                 status=500
             )
 
@@ -143,7 +165,10 @@ class LoginView(APIView):
         ).first()
 
         if not user_obj:
-            return Response({"error": "User not found"}, status=401)
+            return Response(
+                {"error": "User not found"},
+                status=401
+            )
 
         user = authenticate(
             username=user_obj.username,
@@ -151,7 +176,10 @@ class LoginView(APIView):
         )
 
         if not user:
-            return Response({"error": "Invalid password"}, status=401)
+            return Response(
+                {"error": "Invalid password"},
+                status=401
+            )
 
         refresh = RefreshToken.for_user(user)
         role = "vendor" if user.is_vendor else "customer"
