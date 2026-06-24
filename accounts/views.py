@@ -13,7 +13,7 @@ from .models import User, EmailOTP
 
 
 # =========================
-# SEND OTP (FIXED - NO HANG)
+# SEND OTP
 # =========================
 class SendOTPView(APIView):
     permission_classes = [AllowAny]
@@ -23,7 +23,10 @@ class SendOTPView(APIView):
             email = request.data.get("email")
 
             if not email:
-                return Response({"error": "Email required"}, status=400)
+                return Response(
+                    {"error": "Email required"},
+                    status=400
+                )
 
             otp = str(random.randint(100000, 999999))
 
@@ -32,23 +35,25 @@ class SendOTPView(APIView):
                 defaults={"otp": otp}
             )
 
-            # send email safely
-            from django.core.mail import EmailMessage
+            # Print OTP in Render logs
+            print("\n")
+            print("===================================")
+            print("ZAYRA OTP FOR:", email)
+            print("OTP:", otp)
+            print("===================================")
+            print("\n")
 
-            email_msg = EmailMessage(
-                subject="ZAYRA OTP Verification",
-                body=f"Your OTP is: {otp}",
-                from_email=settings.EMAIL_HOST_USER,
-                to=[email],
-            )
-
-            email_msg.send(fail_silently=False)
-
-            return Response({"message": "OTP sent successfully"}, status=200)
+            return Response({
+                "message": "OTP sent successfully"
+            }, status=200)
 
         except Exception as e:
             print("OTP ERROR:", str(e))
-            return Response({"error": str(e)}, status=500)
+
+            return Response(
+                {"error": str(e)},
+                status=500
+            )
 # =========================
 # VERIFY OTP
 # =========================
