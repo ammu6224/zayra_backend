@@ -233,7 +233,7 @@ EMAIL_TIMEOUT = 30
 DEFAULT_FROM_EMAIL = "Zayra <zayraofficial024@gmail.com>"
 SERVER_EMAIL = "zayraofficial024@gmail.com"
 
-Debug prints (remove later)
+#Debug prints (remove later)
 
 print("EMAIL HOST:", EMAIL_HOST)
 print("EMAIL PORT:", EMAIL_PORT)
