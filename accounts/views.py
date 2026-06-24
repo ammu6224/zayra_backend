@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from django.core.mail import send_mail
 from django.db.models import Q
 import random
 
@@ -13,38 +12,42 @@ from .models import User, EmailOTP
 
 
 # =========================
-# SEND OTP (FIXED)class SendOTPView(APIView):
- class SendOTPView(APIView):
-     permission_classes = [AllowAny]
+# SEND OTP (FIXED - NO HANG)
+# =========================
+class SendOTPView(APIView):
+    permission_classes = [AllowAny]
 
-     def post(self, request):
-         email = request.data.get("email")
+    def post(self, request):
+        try:
+            email = request.data.get("email")
 
-         if not email:
-             return Response(
-                 {"error": "Email required"},
-                 status=400
-             )
+            if not email:
+                return Response(
+                    {"error": "Email required"},
+                    status=400
+                )
 
-         otp = str(random.randint(100000, 999999))
+            otp = str(random.randint(100000, 999999))
 
-         EmailOTP.objects.update_or_create(
-             email=email,
-             defaults={"otp": otp}
-         )
+            EmailOTP.objects.update_or_create(
+                email=email,
+                defaults={"otp": otp}
+            )
 
-         # IMPORTANT: NEVER BLOCK REQUEST
-         print(f"OTP FOR {email}: {otp}")
+            print(f"OTP FOR {email}: {otp}")
 
-         return Response({
-             "message": "OTP generated successfully",
-             "otp": otp  # temporary for testing
-         }, status=200)
+            return Response({
+                "message": "OTP generated successfully",
+                "otp": otp
+            }, status=200)
 
-                          except Exception as e:
-                              return Response({
-                                  "error": str(e)
-                              }, status=500)
+        except Exception as e:
+            return Response({
+                "error": "OTP failed",
+                "details": str(e)
+            }, status=500)
+
+
 # =========================
 # VERIFY OTP
 # =========================
@@ -52,7 +55,6 @@ class VerifyOTPView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-
         email = request.data.get("email")
         otp = request.data.get("otp")
 
@@ -62,9 +64,7 @@ class VerifyOTPView(APIView):
         ).first()
 
         if obj:
-            return Response({
-                "verified": True
-            })
+            return Response({"verified": True})
 
         return Response(
             {"verified": False},
@@ -79,15 +79,12 @@ class SignupView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-
         serializer = SignupSerializer(data=request.data)
 
         if serializer.is_valid():
-
             user = serializer.save()
 
             refresh = RefreshToken.for_user(user)
-
             role = "vendor" if user.is_vendor else "customer"
 
             return Response({
@@ -96,12 +93,9 @@ class SignupView(APIView):
                 "access": str(refresh.access_token),
                 "role": role,
                 "user": UserSerializer(user).data
-            }, status=status.HTTP_201_CREATED)
+            }, status=201)
 
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=400)
 
 
 # =========================
@@ -111,7 +105,6 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-
         login_id = request.data.get("login")
         password = request.data.get("password")
 
@@ -128,24 +121,17 @@ class LoginView(APIView):
         ).first()
 
         if not user_obj:
-            return Response(
-                {"error": "User not found"},
-                status=401
-            )
+            return Response({"error": "User not found"}, status=401)
 
         user = authenticate(
             username=user_obj.username,
             password=password
         )
 
-        if user is None:
-            return Response(
-                {"error": "Invalid password"},
-                status=401
-            )
+        if not user:
+            return Response({"error": "Invalid password"}, status=401)
 
         refresh = RefreshToken.for_user(user)
-
         role = "vendor" if user.is_vendor else "customer"
 
         return Response({
@@ -167,7 +153,6 @@ class ProfileView(APIView):
         return Response(serializer.data)
 
     def put(self, request):
-
         serializer = UserSerializer(
             request.user,
             data=request.data,
@@ -178,7 +163,4 @@ class ProfileView(APIView):
             serializer.save()
             return Response(serializer.data)
 
-        return Response(
-            serializer.errors,
-            status=400
-        )
+        return Response(serializer.errors, status=400)
