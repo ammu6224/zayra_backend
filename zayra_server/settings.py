@@ -207,7 +207,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 
 # ==========================
-# EMAIL CONFIGURATION (OTP)
+# EMAIL CONFIGURATION (OTP FIX FIXED)
 # ==========================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -216,10 +216,11 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# Replace with your Gmail
 EMAIL_HOST_USER = "zayraofficial024@gmail.com"
 
-# Replace with Gmail App Password
+# IMPORTANT: REMOVE SPACES in app password
 EMAIL_HOST_PASSWORD = "pyqraotkgcsxwxxp"
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+SERVER_EMAIL = EMAIL_HOST_USER
