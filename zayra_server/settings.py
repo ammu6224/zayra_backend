@@ -4,7 +4,10 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get(
+"SECRET_KEY",
+"django-insecure-zayra-super-secret-key-12345"
+)
 
 DEBUG = True
 
