@@ -208,7 +208,15 @@ class LoginView(APIView):
                 {"error": "User not found"},
                 status=401
             )
-
+        print("================================")
+        print("USER FOUND:", user_obj.username)
+        print("EMAIL:", user_obj.email)
+        print("IS VENDOR:", user_obj.is_vendor)
+        print(
+            "CHECK PASSWORD:",
+            user_obj.check_password(password)
+        )
+        print("================================")
         user = authenticate(
             username=user_obj.username,
             password=password
