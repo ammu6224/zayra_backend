@@ -185,6 +185,11 @@ class LoginView(APIView):
     def post(self, request):
         login_id = request.data.get("login")
         password = request.data.get("password")
+        print("================================")
+        print("LOGIN REQUEST")
+        print("LOGIN ID:", login_id)
+        print("PASSWORD:", password)
+        print("================================")
 
         if not login_id or not password:
             return Response(

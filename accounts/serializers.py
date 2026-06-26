@@ -5,6 +5,7 @@ User = get_user_model()
 
 
 class SignupSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
         fields = (
@@ -14,24 +15,37 @@ class SignupSerializer(serializers.ModelSerializer):
             "is_vendor",
         )
 
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data["username"],
-            email=validated_data.get("email"),
-            password=validated_data["password"]
-        )
+        extra_kwargs = {
+            "password": {
+                "write_only": True
+            }
+        }
 
-        user.is_vendor = validated_data.get(
+    def create(self, validated_data):
+        is_vendor = validated_data.pop(
             "is_vendor",
             False
         )
 
-        user.save()
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"]
+        )
 
+        if is_vendor:
+            user.is_vendor = True
+            user.is_customer = False
+        else:
+            user.is_vendor = False
+            user.is_customer = True
+
+        user.save()
         return user
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
         fields = (
