@@ -14,20 +14,29 @@ class ReviewViewSet(viewsets.ModelViewSet):
         IsAuthenticatedOrReadOnly
     ]
 
+    queryset = Review.objects.all().order_by(
+        "-created_at"
+    )
+
     def get_queryset(self):
 
         product_id = self.request.query_params.get(
             "product"
         )
 
-        if product_id:
-            return Review.objects.filter(
-                product_id=product_id
-            ).order_by("-created_at")
+        queryset = Review.objects.all().order_by(
+            "-created_at"
+        )
 
-        return Review.objects.all()
+        if product_id:
+            queryset = queryset.filter(
+                product_id=product_id
+            )
+
+        return queryset
 
     def perform_create(self, serializer):
+
         serializer.save(
             customer=self.request.user
         )
