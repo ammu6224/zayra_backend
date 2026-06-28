@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     "chat",
     "negotiations",
     "core",
+
+    # NEW APP
+    "reviews",
+
 ]
 
 

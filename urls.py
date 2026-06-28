@@ -4,30 +4,55 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # ==========================
+    # ADMIN
+    # ==========================
     path("admin/", admin.site.urls),
 
-    # Authentication
+    # ==========================
+    # AUTHENTICATION
+    # ==========================
     path("api/auth/", include("accounts.urls")),
 
-    # Products
+    # ==========================
+    # PRODUCTS
+    # ==========================
     path("api/products/", include("products.urls")),
 
-    # Cart
+    # ==========================
+    # CART
+    # ==========================
     path("api/cart/", include("cart.urls")),
 
-    # Orders
+    # ==========================
+    # ORDERS
+    # ==========================
     path("api/orders/", include("orders.urls")),
 
-    # Chat
+    # ==========================
+    # CHAT
+    # ==========================
     path("api/chat/", include("chat.urls")),
 
-    # Negotiation
-    path("api/negotiation/", include("negotiation.urls")),
+    # ==========================
+    # NEGOTIATIONS
+    # ==========================
+    path("api/negotiation/", include("negotiations.urls")),
 
-    # Core APIs (Admin + Vendor Dashboard)
+    # ==========================
+    # REVIEWS & RATINGS
+    # ==========================
+    path("api/reviews/", include("reviews.urls")),
+
+    # ==========================
+    # CORE APIs
+    # ==========================
     path("api/", include("core.urls")),
 ]
 
+# ==========================
+# MEDIA FILES
+# ==========================
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL,
