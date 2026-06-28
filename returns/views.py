@@ -34,11 +34,21 @@ class ReturnRequestViewSet(viewsets.ModelViewSet):
         )
 
 
+# ===========================
+# VENDOR RETURN REQUESTS
+# ===========================
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def vendor_return_requests(request):
 
     vendor = request.user
+
+    if not vendor.is_vendor:
+        return Response(
+            {"error": "Only vendors can access this"},
+            status=403
+        )
 
     returns = ReturnRequest.objects.filter(
         order__product__vendor=vendor
@@ -52,11 +62,21 @@ def vendor_return_requests(request):
     return Response(serializer.data)
 
 
+# ===========================
+# UPDATE RETURN STATUS
+# ===========================
+
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
 def update_return_status(request, pk):
 
     vendor = request.user
+
+    if not vendor.is_vendor:
+        return Response(
+            {"error": "Only vendors can update returns"},
+            status=403
+        )
 
     try:
 
@@ -92,5 +112,6 @@ def update_return_status(request, pk):
 
     return Response({
         "message":
-            "Return status updated successfully"
+            "Return status updated successfully",
+        "status": return_request.status
     })
