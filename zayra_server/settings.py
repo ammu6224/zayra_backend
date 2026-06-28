@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # NEW APP
     "reviews",
+    "returns",
 
 ]
 

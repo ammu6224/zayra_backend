@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+
     # ==========================
     # ADMIN
     # ==========================
@@ -43,6 +44,11 @@ urlpatterns = [
     # REVIEWS & RATINGS
     # ==========================
     path("api/reviews/", include("reviews.urls")),
+
+    # ==========================
+    # RETURNS & REFUNDS
+    # ==========================
+    path("api/returns/", include("returns.urls")),
 
     # ==========================
     # CORE APIs
