@@ -11,9 +11,12 @@ SECRET_KEY = os.environ.get(
     "django-insecure-zayra-super-secret-key-12345"
 )
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["myzayra.in",
+                 "www.myzayra.in",
+                 "api.myzayra.in",
+                 ]
 
 
 # ==========================
@@ -179,8 +182,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.AllowAny",
+        "rest_framework.permissions.IsAuthenticated",
     ),
 }
 
