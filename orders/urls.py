@@ -4,6 +4,7 @@ from .views import OrderViewSet
 
 router = DefaultRouter()
 
+# REMOVE 'orders'
 router.register(r'', OrderViewSet, basename='orders')
 
 urlpatterns = [
