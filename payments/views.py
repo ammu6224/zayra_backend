@@ -20,7 +20,6 @@ client = razorpay.Client(
 # CREATE ORDER
 # =========================
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def create_payment_order(request):
 
     amount = request.data.get("amount")
