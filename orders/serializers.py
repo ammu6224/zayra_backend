@@ -5,14 +5,17 @@ from .models import Order
 class OrderSerializer(serializers.ModelSerializer):
 
     product_title = serializers.CharField(
-        source="product.name",
+        source="product.title",
         read_only=True
     )
 
     class Meta:
         model = Order
-        fields = "__all__"   # ⚠ FIXED (was _all_)
+
+        fields = "__all__"
+
         read_only_fields = [
             "customer",
-            "created_at"
+            "created_at",
+            "group_id",
         ]
